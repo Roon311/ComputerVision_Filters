@@ -13,7 +13,7 @@ from helpers import load_image, save_image, my_imfilter,create_mean_filter
 
 #----------------------------Make result Direct---------------------------#
 
-resultsDir = '..' + os.sep + 'results'
+resultsDir = 'results\\'
 if not os.path.exists(resultsDir):
     os.mkdir(resultsDir)
 print("scikit-image version: {}".format(skimage.__version__))
@@ -61,9 +61,11 @@ cv2.imwrite('results\\blur_image.jpg', blur_image_norm)
 # https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html#Mat%20getGaussianKernel(int%20ksize,%20double%20sigma,%20int%20ktype)
 large_blur_filter=cv2.getGaussianKernel(7, 3)
 large_blur_image = my_imfilter(test_image, large_blur_filter);
+cv2.imshow("large blur",large_blur_image)
 large_blur_image=cv2.cvtColor(((blur_image+1)*255/2).astype(np.uint8), cv2.COLOR_BGR2RGB) 
+cv2.imshow("large blur2",large_blur_image)
 large_blur_image_norm = cv2.normalize(large_blur_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-#cv2.imshow("frame3",large_blur_image_norm)
+cv2.imshow("frame3",large_blur_image_norm)
 cv2.imwrite('results\\large_blur_image.jpg', large_blur_image_norm)
 #-------------------------------------------------------------------------#
 #------------------------------Naive Large Blur---------------------------#

@@ -1,7 +1,3 @@
-# Project Image Filtering and Hybrid Images - Generate Hybrid Image
-# Based on previous and current work
-# by James Hays for CSCI 1430 @ Brown and
-# CS 4495/6476 @ Georgia Tech
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
