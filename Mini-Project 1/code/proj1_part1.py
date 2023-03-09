@@ -26,7 +26,7 @@ print(test_image.shape)
 print(type(test_image))
 # test_image = rescale(test_image, 0.7, mode = 'reflect')
 #-------------------------------------------------------------------------#
-'''
+
 #-----------------------------Identity Filter-----------------------------#
 
 #cv2.imshow("test_image",test_image)#view the test image 
@@ -41,7 +41,7 @@ print('image saved')
 #-------------------------------------------------------------------------#
 
 #---------------------------------Box Filter------------------------------#
-'''
+
 """Small blur with a box filter This filter should remove some high frequencies."""
 blur_filter = create_mean_filter((5,5))#create a 3*3 box filter
 blur_filter /= np.sum(blur_filter, dtype=np.float32)  #divide the blur filter by the sum of of the filter
@@ -50,9 +50,9 @@ blur_image = my_imfilter(test_image, blur_filter)
 blur_image=cv2.cvtColor(((blur_image+1)*255/2).astype(np.uint8), cv2.COLOR_BGR2RGB) 
 blur_image_norm = cv2.normalize(blur_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 #cv2.imshow("frame2",blur_image_norm)
-#cv2.imwrite('results\\blur_image.jpg', blur_image_norm)
+cv2.imwrite('results\\blur_image.jpg', blur_image_norm)
 #-------------------------------------------------------------------------#
-'''
+
 #-------------------------------GaussianKernel----------------------------#
 """Large blur:This blur would be slow to do directly, so we instead use the fact that Gaussian blurs are separable and blur sequentially in each direction."""
 # generate a gaussian kernel with any parameters of your choice. you may only in this case use a function
@@ -72,21 +72,19 @@ print('Large Blur saved')
 #-------------------------------------------------------------------------#
 #------------------------------Naive Large Blur---------------------------#
 
-
-
-## Slow (naive) version of large blur
+""" Slow (naive) version of large blur"""
 # import time
 # large_blur_filter = np.dot(large_1d_blur_filter, large_1d_blur_filter.T)
 # t = time.time()
 # large_blur_image = my_imfilter(test_image, large_blur_filter);
 # t = time.time() - t
 # print('{:f} seconds'.format(t))
-##
+
 #-------------------------------------------------------------------------#
 
-"""
-Oriented filter (Sobel operator)
-"""
+#-------------------------------Sobel Filter------------------------------#
+
+"""Oriented filter (Sobel operator)"""
 sobel_filter = np.asarray([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=np.float32)  # should respond to horizontal gradients
 sobel_image = my_imfilter(test_image, sobel_filter)
 
@@ -94,11 +92,11 @@ sobel_image = my_imfilter(test_image, sobel_filter)
 sobel_image = np.clip(sobel_image+0.5, 0.0, 1.0)
 plt.imshow(sobel_image)
 done = save_image(resultsDir + os.sep + 'sobel_image.jpg', sobel_image)
+#-------------------------------------------------------------------------#
 
+#-----------------------------Laplacian Filter----------------------------#
 
-"""
-High pass filter (discrete Laplacian)
-"""
+"""High pass filter (discrete Laplacian)"""
 laplacian_filter = np.asarray([[0, 1, 0], [1, -4, 1], [0, 1, 0]], dtype=np.float32)
 laplacian_image = my_imfilter(test_image, laplacian_filter)
 
@@ -106,19 +104,16 @@ laplacian_image = my_imfilter(test_image, laplacian_filter)
 laplacian_image = np.clip(laplacian_image+0.5, 0.0, 1.0)
 plt.figure(); plt.imshow(laplacian_image)
 done = save_image(resultsDir + os.sep + 'laplacian_image.jpg', laplacian_image)
-'''
+#-------------------------------------------------------------------------#
+
+#-----------------------------High-pass Filter----------------------------#
+
 # High pass "filter" alternative
-print(test_image)
 blur_image = blur_image.astype(np.float32)
 blur_image /= 255.
-print(blur_image)
 high_pass_image = test_image - blur_image
-print(high_pass_image)
-#high_pass_image=cv2.cvtColor(((high_pass_image*255)).astype(np.uint8), cv2.COLOR_BGR2RGB) 
-#print(high_pass_image)
 high_pass_image = np.clip(high_pass_image+0.5, 0, 1)
-#cv2.imshow("frame4",high_pass_image)
-#cv2.imwrite('results\\high_pass_image.jpg', high_pass_image)
-#print(high_pass_image)
 plt.figure(); plt.imshow(high_pass_image)
 done = save_image(resultsDir + os.sep + 'high_pass_image.jpg', high_pass_image)
+#-------------------------------------------------------------------------#
+
