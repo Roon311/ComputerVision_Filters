@@ -21,7 +21,7 @@ print("scikit-image version: {}".format(skimage.__version__))
 
 #------------------------------Load the image-----------------------------#
 
-test_image = load_image(r'data\dog.bmp')
+test_image = load_image(r'data\zankyou.jpg')
 print(test_image.shape)
 print(type(test_image))
 # test_image = rescale(test_image, 0.7, mode = 'reflect')
@@ -108,13 +108,17 @@ plt.figure(); plt.imshow(laplacian_image)
 done = save_image(resultsDir + os.sep + 'laplacian_image.jpg', laplacian_image)
 '''
 # High pass "filter" alternative
+print(test_image)
+blur_image = blur_image.astype(np.float32)
+blur_image /= 255.
+print(blur_image)
 high_pass_image = test_image - blur_image
 print(high_pass_image)
-high_pass_image=cv2.cvtColor(((high_pass_image*255)).astype(np.uint8), cv2.COLOR_BGR2RGB) 
-print(high_pass_image)
-high_pass_image = np.clip(high_pass_image+125, 0, 255)
-cv2.imshow("frame4",high_pass_image)
-cv2.imwrite('results\\high_pass_image.jpg', high_pass_image)
+#high_pass_image=cv2.cvtColor(((high_pass_image*255)).astype(np.uint8), cv2.COLOR_BGR2RGB) 
 #print(high_pass_image)
-#plt.figure(); plt.imshow(high_pass_image)
-#done = save_image(resultsDir + os.sep + 'high_pass_image.jpg', high_pass_image)
+high_pass_image = np.clip(high_pass_image+0.5, 0, 1)
+#cv2.imshow("frame4",high_pass_image)
+#cv2.imwrite('results\\high_pass_image.jpg', high_pass_image)
+#print(high_pass_image)
+plt.figure(); plt.imshow(high_pass_image)
+done = save_image(resultsDir + os.sep + 'high_pass_image.jpg', high_pass_image)
