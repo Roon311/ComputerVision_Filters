@@ -92,6 +92,7 @@ high_pass_image = np.clip(high_pass_image+0.5, 0, 1)
 plt.figure(); plt.imshow(high_pass_image)
 done = save_image(resultsDir + os.sep + 'fft_high_pass_image.jpg', high_pass_image)
 #-------------------------------------------------------------------------#
+
 #--------------------------Hybrid image generation------------------------#
 resultsDir = 'results\\bonus\\part2\\'
 if not os.path.exists(resultsDir):
@@ -111,4 +112,23 @@ names=['low_frequencies1.jpg','high_frequencies1.jpg','low_frequencies2.jpg','hi
 for i,j in zip(normalized,names):
     im=cv2.cvtColor(((i)), cv2.COLOR_BGR2RGB) 
     cv2.imwrite(resultsDir+j, im)
+
 #-------------------------------------------------------------------------#
+resultsDir = 'results\\bonus\\part3\\'
+if not os.path.exists(resultsDir):
+    os.mkdir(resultsDir)
+image1 = load_image('data\kaneki.jpg')
+image2 = load_image('data\\accelerator.jpg')
+cutoff_frequency = 7
+low_frequencies, high_frequencies, hybrid_image = gen_hybrid_image(image1, image2, cutoff_frequency,fft=True)
+vis = vis_hybrid_image(hybrid_image[0])
+vis2 = vis_hybrid_image(hybrid_image[1])
+to_normalize=[low_frequencies[0],high_frequencies[0],low_frequencies[1],high_frequencies[1],hybrid_image[1],hybrid_image[0],vis,vis2]
+normalized=normalize_images(to_normalize)
+#normalized[0]=cv2.cvtColor(((normalized[0])), cv2.COLOR_BGR2RGB) 
+#normalized[2]=cv2.cvtColor(((normalized[2])), cv2.COLOR_BGR2RGB) 
+
+names=['low_frequencies1.jpg','high_frequencies1.jpg','low_frequencies2.jpg','high_frequencies2.jpg','hybrid_image12.jpg','hybrid_image21.jpg','hybrid_image_scales12.jpg','hybrid_image_scales21.jpg']
+for i,j in zip(normalized,names):
+    im=cv2.cvtColor(((i)), cv2.COLOR_BGR2RGB) 
+    cv2.imwrite(resultsDir+j, im)
