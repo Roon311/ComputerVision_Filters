@@ -66,6 +66,12 @@ def my_imfilter(image: np.ndarray, filter: np.ndarray):
   return filtered_image
 
   
+def create_gaussian_filter(ksize: tuple, sigma: float):
+  x = np.linspace(-(ksize[0] - 1)/2, (ksize[0] - 1)/2, ksize[0])
+  y = np.linspace(-(ksize[1] - 1)/2, (ksize[1] - 1)/2, ksize[1])
+  xx, yy = np.meshgrid(x, y)
+  kernel = np.exp(-0.5 * (np.square(xx) + np.square(yy)) / np.square(sigma))
+  return kernel / np.sum(kernel)
 
 def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: float):
   """
@@ -79,7 +85,6 @@ def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: f
    - Use my_imfilter to create 'low_frequencies' and 'high_frequencies'.
    - Combine them to create 'hybrid_image'.
   """
-
   assert image1.shape == image2.shape
 
   # Steps:
@@ -87,13 +92,8 @@ def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: f
   #     blur that works best will vary with different image pairs
   # generate a gaussian kernel with mean=0 and sigma = cutoff_frequency,
   # Just a heads up but think how you can generate 2D gaussian kernel from 1D gaussian kernel
-  def create_gaussian_filter(ksize: tuple, sigma: float):
-    x = np.linspace(-(ksize[0] - 1)/2, (ksize[0] - 1)/2, ksize[0])
-    y = np.linspace(-(ksize[1] - 1)/2, (ksize[1] - 1)/2, ksize[1])
-    xv, yv = np.meshgrid(x, y)
-    f = np.exp(-1 * (xv + yv)**2 * (1 / (2 * sigma**2)))
-    return f/f.sum()
-  kernel = create_gaussian_filter(ksize = (3, 3), sigma = cutoff_frequency)
+ 
+  kernel = create_gaussian_filter(ksize = (13, 13), sigma = cutoff_frequency)
   
   # Your code here:
   low_frequencies = [my_imfilter(image1, kernel), my_imfilter(image2, kernel)]
@@ -102,11 +102,11 @@ def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: f
   #     subtract a blurred version of image2 from the original version of image2.
   #     This will give you an image centered at zero with negative values.
   # Your code here #
-  high_frequencies = [image1 - my_imfilter(image1, kernel), image2 - my_imfilter(image2, kernel)]
+  high_frequencies = [image1 - low_frequencies[0], image2 - low_frequencies[1]]
 
   # (3) Combine the high frequencies and low frequencies
   # Your code here #
-  hybrid_image = low_frequencies[0] + high_frequencies[1] # Replace with your implementation
+  hybrid_image = [low_frequencies[0] + high_frequencies[1],low_frequencies[1] + high_frequencies[0]] # Replace with your implementation
 
   # (4) At this point, you need to be aware that values larger than 1.0
   # or less than 0.0 may cause issues in the functions in Python for saving
@@ -138,7 +138,7 @@ def vis_hybrid_image(hybrid_image: np.ndarray):
     output = np.hstack((output, np.ones((original_height, padding, num_colors),
                                         dtype=np.float32)))
     # downsample image
-    cur_image = rescale(cur_image, scale_factor, mode='reflect')
+    cur_image = rescale(cur_image, scale_factor, mode='reflect',channel_axis=2)
     # pad the top to append to the output
     pad = np.ones((original_height-cur_image.shape[0], cur_image.shape[1],
                    num_colors), dtype=np.float32)

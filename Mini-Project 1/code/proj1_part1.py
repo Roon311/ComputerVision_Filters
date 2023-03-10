@@ -13,7 +13,7 @@ from helpers import load_image, save_image, my_imfilter,create_mean_filter
 
 #----------------------------Make result Direct---------------------------#
 
-resultsDir = 'results\\'
+resultsDir = 'results\\part1\\'
 if not os.path.exists(resultsDir):
     os.mkdir(resultsDir)
 print("scikit-image version: {}".format(skimage.__version__))
@@ -36,7 +36,7 @@ print(identity_image.dtype)
 identity_image=cv2.cvtColor(((identity_image+1)*255/2).astype(np.uint8), cv2.COLOR_BGR2RGB) 
 #cv2.imshow("frame1",identity_image)
 identity_image_norm = cv2.normalize(identity_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-cv2.imwrite('results\identity_image.jpg',identity_image_norm)
+cv2.imwrite('results\\part1\\identity_image.jpg',identity_image_norm)
 print('image saved')
 #-------------------------------------------------------------------------#
 
@@ -50,7 +50,7 @@ blur_image = my_imfilter(test_image, blur_filter)
 blur_image=cv2.cvtColor(((blur_image+1)*255/2).astype(np.uint8), cv2.COLOR_BGR2RGB) 
 blur_image_norm = cv2.normalize(blur_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 #cv2.imshow("frame2",blur_image_norm)
-cv2.imwrite('results\\blur_image.jpg', blur_image_norm)
+cv2.imwrite('results\\part1\\blur_image.jpg', blur_image_norm)
 #-------------------------------------------------------------------------#
 
 #-------------------------------GaussianKernel----------------------------#
@@ -67,7 +67,7 @@ large_blur_image=cv2.cvtColor(((large_blur_image*255)).astype(np.uint8), cv2.COL
 #cv2.imshow("large blur2",large_blur_image)
 large_blur_image_norm = cv2.normalize(large_blur_image, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 #cv2.imshow("frame3",large_blur_image_norm)
-cv2.imwrite('results\\large_blur_image.jpg', large_blur_image_norm)
+cv2.imwrite('results\\part1\\large_blur_image.jpg', large_blur_image_norm)
 print('Large Blur saved')
 #-------------------------------------------------------------------------#
 #------------------------------Naive Large Blur---------------------------#
