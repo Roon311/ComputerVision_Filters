@@ -65,7 +65,8 @@ if not os.path.exists(resultsDir):
 print('start saving')
 print(len(normalized))
 for i,j in zip(normalized,names):
-    cv2.imwrite(resultsDir+j, i)
+    im=cv2.cvtColor(((i)), cv2.COLOR_BGR2RGB) 
+    cv2.imwrite(resultsDir+j, im)
 
 print('saving successful')
 #-------------------------------------------------------------------------#

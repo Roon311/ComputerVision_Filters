@@ -119,7 +119,7 @@ def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: f
   
   # Your code here:
   low_frequencies = [my_imfilter(image1, kernel,fft), my_imfilter(image2, kernel,fft)]
-
+  
   # (2) Remove the low frequencies from image2. The easiest way to do this is to
   #     subtract a blurred version of image2 from the original version of image2.
   #     This will give you an image centered at zero with negative values.

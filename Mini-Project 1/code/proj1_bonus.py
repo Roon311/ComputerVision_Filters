@@ -104,7 +104,11 @@ vis = vis_hybrid_image(hybrid_image[0])
 vis2 = vis_hybrid_image(hybrid_image[1])
 to_normalize=[low_frequencies[0],high_frequencies[0],low_frequencies[1],high_frequencies[1],hybrid_image[1],hybrid_image[0],vis,vis2]
 normalized=normalize_images(to_normalize)
+#normalized[0]=cv2.cvtColor(((normalized[0])), cv2.COLOR_BGR2RGB) 
+#normalized[2]=cv2.cvtColor(((normalized[2])), cv2.COLOR_BGR2RGB) 
+
 names=['low_frequencies1.jpg','high_frequencies1.jpg','low_frequencies2.jpg','high_frequencies2.jpg','hybrid_image12.jpg','hybrid_image21.jpg','hybrid_image_scales12.jpg','hybrid_image_scales21.jpg']
 for i,j in zip(normalized,names):
-    cv2.imwrite(resultsDir+j, i)
+    im=cv2.cvtColor(((i)), cv2.COLOR_BGR2RGB) 
+    cv2.imwrite(resultsDir+j, im)
 #-------------------------------------------------------------------------#
