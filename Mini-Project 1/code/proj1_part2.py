@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import cv2
-from helpers import vis_hybrid_image, load_image, save_image, my_imfilter, gen_hybrid_image
+import os
+from helpers import vis_hybrid_image, load_image, gen_hybrid_image,normalize_images
 #-------------------------------------------------------------------------#
 
 """ Debugging tip: You can split your python code and print in between
@@ -53,32 +54,18 @@ vis2 = vis_hybrid_image(hybrid_image[1])
 #plt.figure(figsize=(20, 20))
 #plt.imshow(vis)
 print(hybrid_image[0])
-low_frequencies[0] = cv2.normalize(low_frequencies[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-high_frequencies[0] = cv2.normalize(high_frequencies[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-low_frequencies[1] = cv2.normalize(low_frequencies[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-high_frequencies[1] = cv2.normalize(high_frequencies[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-hybrid_image[1] = cv2.normalize(hybrid_image[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-hybrid_image[0] = cv2.normalize(hybrid_image[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-print(hybrid_image[0])
-vis= cv2.normalize(vis, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-vis2= cv2.normalize(vis2, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+to_normalize=[low_frequencies[0],high_frequencies[0],low_frequencies[1],high_frequencies[1],hybrid_image[1],hybrid_image[0],vis,vis2]
+normalized=normalize_images(to_normalize)
+names=['low_frequencies1.jpg','high_frequencies1.jpg','low_frequencies2.jpg','high_frequencies2.jpg','hybrid_image12.jpg','hybrid_image21.jpg','hybrid_image_scales12.jpg','hybrid_image_scales21.jpg']
 
+resultsDir = 'results\\part2\\'
+if not os.path.exists(resultsDir):
+    os.mkdir(resultsDir)
 
 print('start saving')
-cv2.imwrite('results\\part2\\low_frequencies1.jpg', low_frequencies[0])
-cv2.imwrite('results\\part2\\high_frequencies1.jpg', high_frequencies[0])
-cv2.imwrite('results\\part2\\low_frequencies2.jpg', low_frequencies[1])
-cv2.imwrite('results\\part2\\high_frequencies2.jpg', high_frequencies[1])
-cv2.imwrite('results\\part2\\hybrid_image12.jpg', hybrid_image[0])
-cv2.imwrite('results\\part2\\hybrid_image21.jpg', hybrid_image[1])
-cv2.imwrite('results\\part2\\hybrid_image_scales12.jpg', vis)
-cv2.imwrite('results\\part2\\hybrid_image_scales21.jpg', vis2)
+print(len(normalized))
+for i,j in zip(normalized,names):
+    cv2.imwrite(resultsDir+j, i)
 
-#save_image('results/low_frequencies1.jpg', low_frequencies[0])
-#save_image('results/high_frequencies1.jpg', high_frequencies[0])
-#save_image('results/low_frequencies2.jpg', low_frequencies[1])
-#save_image('results/high_frequencies2.jpg', high_frequencies[1])
-#save_image('results/hybrid_image.jpg', hybrid_image)
-#save_image('results/hybrid_image_scales.jpg', vis)
 print('saving successful')
 #-------------------------------------------------------------------------#

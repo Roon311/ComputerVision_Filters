@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from numpy import pi, exp, sqrt
 from skimage import io, img_as_ubyte, img_as_float32
+import cv2
 from skimage.transform import rescale
 #--------------------------------------------------------#
 #--------------------Make blur filter--------------------#
@@ -167,6 +168,12 @@ def vis_hybrid_image(hybrid_image: np.ndarray):
     output = np.hstack((output, tmp))
   return output
 
+def normalize_images(images):
+  normalized_images=[]
+  for img in images:
+      normalized_images.append(cv2.normalize(img, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U))
+  return normalized_images
+      
 def load_image(path):
   return img_as_float32(io.imread(path))
 

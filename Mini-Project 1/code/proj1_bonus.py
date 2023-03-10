@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from PIL import Image 
 import PIL 
 import cv2
-from helpers import load_image, save_image, my_imfilter,create_mean_filter,gen_hybrid_image,vis_hybrid_image
+from helpers import load_image, save_image, my_imfilter,create_mean_filter,gen_hybrid_image,vis_hybrid_image,normalize_images
 #-------------------------------------------------------------------------#
 
 #----------------------------Make result Direct---------------------------#
@@ -102,20 +102,9 @@ cutoff_frequency = 11
 low_frequencies, high_frequencies, hybrid_image = gen_hybrid_image(image1, image2, cutoff_frequency,fft=True)
 vis = vis_hybrid_image(hybrid_image[0])
 vis2 = vis_hybrid_image(hybrid_image[1])
-low_frequencies[0] = cv2.normalize(low_frequencies[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-high_frequencies[0] = cv2.normalize(high_frequencies[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-low_frequencies[1] = cv2.normalize(low_frequencies[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-high_frequencies[1] = cv2.normalize(high_frequencies[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-hybrid_image[1] = cv2.normalize(hybrid_image[1], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-hybrid_image[0] = cv2.normalize(hybrid_image[0], dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-vis= cv2.normalize(vis, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-vis2= cv2.normalize(vis2, dst=None, alpha=0, beta=255,norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-cv2.imwrite(resultsDir+'low_frequencies1.jpg', low_frequencies[0])
-cv2.imwrite(resultsDir+'high_frequencies1.jpg', high_frequencies[0])
-cv2.imwrite(resultsDir+'low_frequencies2.jpg', low_frequencies[1])
-cv2.imwrite(resultsDir+'high_frequencies2.jpg', high_frequencies[1])
-cv2.imwrite(resultsDir+'hybrid_image12.jpg', hybrid_image[0])
-cv2.imwrite(resultsDir+'hybrid_image21.jpg', hybrid_image[1])
-cv2.imwrite(resultsDir+'hybrid_image_scales12.jpg', vis)
-cv2.imwrite(resultsDir+'hybrid_image_scales21.jpg', vis2)
+to_normalize=[low_frequencies[0],high_frequencies[0],low_frequencies[1],high_frequencies[1],hybrid_image[1],hybrid_image[0],vis,vis2]
+normalized=normalize_images(to_normalize)
+names=['low_frequencies1.jpg','high_frequencies1.jpg','low_frequencies2.jpg','high_frequencies2.jpg','hybrid_image12.jpg','hybrid_image21.jpg','hybrid_image_scales12.jpg','hybrid_image_scales21.jpg']
+for i,j in zip(normalized,names):
+    cv2.imwrite(resultsDir+j, i)
 #-------------------------------------------------------------------------#
