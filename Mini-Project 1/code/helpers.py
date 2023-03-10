@@ -37,17 +37,35 @@ def convolve(image, filter):
   output = output[int(np.ceil((r2-1)/2)):int(np.ceil((r2-1)/2))+ image.shape[0], int(np.ceil((c2-1)/2)):int(np.ceil((c2-1)/2))+ image.shape[1]]
   return output
 #--------------------------------------------------------#
-def apply_conv(img,filter,channels):
+#--------------------FFT-Convolution---------------------#
+
+def fft_convolve(image, filter):
+    
+    r1, c1 = image.shape#image dimensions
+    #r2, c2 = filter.shape#filter dimensions
+    
+    # Compute the FFT of the image and the filter
+    im_fft = np.fft.fft2(image)#move to the frequency domain of image
+    k_fft = np.fft.fft2(filter, s=(r1, c1))#move to the frequency domain of the kernel
+    
+    # Convolution is multiplication in freq domain
+    conv_result = im_fft * k_fft#calculate convolution
+    
+    convolved = np.fft.ifft2(conv_result).real#return from the frequency domian to the time domain
+    return convolved
+#--------------------------------------------------------#
+#---------------------Apply-Conv-------------------------#
+def apply_conv(img,filter,channels,func):
   filtered_image=np.zeros(img.shape)
   for i in range(channels):
-      filtered_image[...,i]= convolve(img[...,i], filter)
+      filtered_image[...,i]= func(img[...,i], filter)
       plt.imshow(filtered_image)
 
   #filtered_image = filtered_image.astype(np.uint8)
   return filtered_image
 #--------------------------------------------------------#
 
-def my_imfilter(image: np.ndarray, filter: np.ndarray):
+def my_imfilter(image: np.ndarray, filter: np.ndarray,fft=False):
   """
   Your function should meet the requirements laid out on the project webpage.
   Apply a filter to an image. Return the filtered image.
@@ -62,7 +80,10 @@ def my_imfilter(image: np.ndarray, filter: np.ndarray):
   r1, c1,channels = image.shape
   k, l = filter.shape # filter's shape
   assert k % 2 != 0 and l % 2 != 0   #Return an error message for even filters, as their output is undefined
-  filtered_image=apply_conv(image,filter,channels)
+  if fft==False:
+     filtered_image=apply_conv(image,filter,channels,convolve)
+  else:
+    filtered_image=apply_conv(image,filter,channels,fft_convolve)
   return filtered_image
 
   
@@ -73,7 +94,7 @@ def create_gaussian_filter(ksize: tuple, sigma: float):
   kernel = np.exp(-0.5 * (np.square(xx) + np.square(yy)) / np.square(sigma))
   return kernel / np.sum(kernel)
 
-def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: float):
+def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: float,fft=False):
   """
    Inputs:
    - image1 -> The image from which to take the low frequencies.
@@ -96,7 +117,7 @@ def gen_hybrid_image(image1: np.ndarray, image2: np.ndarray, cutoff_frequency: f
   kernel = create_gaussian_filter(ksize = (13, 13), sigma = cutoff_frequency)
   
   # Your code here:
-  low_frequencies = [my_imfilter(image1, kernel), my_imfilter(image2, kernel)]
+  low_frequencies = [my_imfilter(image1, kernel,fft), my_imfilter(image2, kernel,fft)]
 
   # (2) Remove the low frequencies from image2. The easiest way to do this is to
   #     subtract a blurred version of image2 from the original version of image2.
